@@ -10,9 +10,11 @@
 	</title>
 
 	<description>
-		<en><![CDATA[Immersive sound and visual effects addon for PlayerNeedsAdvanced.
+<en><![CDATA[Immersive sound and visual effects addon for PlayerNeedsAdvanced.
 Adds gender-aware warning sounds, pulsing screen flashes and microsleep blackouts for hunger, thirst and fatigue.
+
 Requires: FS25_playerNeedsAdvanced
+Github-Link: https://github.com/LimnedMoon/FS25_PNA_ImmersiveAddon
 
 Changelog 1.1.1.0:
 - Endurance system implemented
@@ -20,25 +22,32 @@ Changelog 1.1.1.0:
 - Dynamic sound samples based on endurance consumption
 - Different endurance consumption on foot vs. in vehicle
 - Jump height and walking speed reduced at low endurance
+
 Changelog 1.1.0.7:
 - Stress system implemented
 - Sound samples / flash animations added
 - 2-Tier Toastmessage system implemented
+
 Changelog 1.1.0.6:
 - Safety check for audio file existence before loadSample call
+
 Changelog 1.1.0.5:
 - Locals added for optimization and formatting
+
 Changelog 1.1.0.0:
 - Cleanup & performance overhaul
 - BUGFIX: getPNA() no longer iterates all listeners every frame
 - BUGFIX: detectGenderFromSavegame() now uses caching (preventing XML opening every 5s)
 - Removed err() and _toastDumped
+
 Changelog 1.0.0.0:
 - Initial Release]]></en>
 
-		<de><![CDATA[Immersives Sound- und Bildschirmeffekt-Addon für PlayerNeedsAdvanced.
+<de><![CDATA[Immersives Sound- und Bildschirmeffekt-Addon für PlayerNeedsAdvanced.
 Geschlechtsspezifische Warnsounds, pulsierende Bildschirmeffekte und Sekundenschlaf für Hunger, Durst und Müdigkeit.
+
 Benötigt: FS25_playerNeedsAdvanced
+Github-Link: https://github.com/LimnedMoon/FS25_PNA_ImmersiveAddon
 
 Changelog 1.1.1.0:
 - Ausdauer-System implementiert
@@ -46,19 +55,23 @@ Changelog 1.1.1.0:
 - Soundsamples dynamisch je nach Ausdauerverbrauch
 - Ausdauerverbrauch onfoot und inVehicle unterschiedlich
 - Sprunghöhe / Gehgeschwindigkeit bei niedriger Ausdauer reduziert
+
 Changelog 1.1.0.7:
 - Stress-System implementiert
 - Soundsamples / Flash-Animationen implementiert
 - 2-Tier Toastmessage-System implementiert
+
 Changelog 1.1.0.6:
 - Sicherheitscheck ob Audiodatei vorhanden ist vor loadSample Aufruf
 Changelog 1.1.0.5:
 - Locals hinzugefügt zur Optimierung / Format
+
 Changelog 1.1.0.0:
 - Cleanup & Performance-Überarbeitung
 - BUG: getPNA() suchte jedes Frame alle Listener durch (behoben)
 - BUG: detectGenderFromSavegame() öffnete XML alle 5s ohne Cache (behoben)
 - err(), _toastDumped entfernt
+
 Changelog 1.0.0.0:
 - Initial Release]]></de>
 	</description>
