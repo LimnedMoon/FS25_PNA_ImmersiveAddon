@@ -29,7 +29,7 @@ Stress baut sich auf am Steuer durch konzentration, sowie bei Regen und wenn Bed
 ## Wichtig:
 #1: Alle Parameter und timings wie auch die Intervalle sollten an persönliche Bedürfnisse in der Datei "modOptions.xml" eingestellt werden.
 #
-#2: Damit das Modul funkltioniert wie es soll und die Immersion zu tragen kommt, muss in der Core-Mod "FS25_playerNeedsAdvanced" in der Datei "modOptions.xml" die Textwarnung AUS-geschaltet werden: <warningCenter enabled="false"
+#2: Damit das Modul funktioniert wie es soll und die Immersion zu tragen kommt, muss in der Core-Mod "FS25_playerNeedsAdvanced" in der Datei "modOptions.xml" die Textwarnung AUS-geschaltet werden: <warningCenter enabled="false"
 
 ## Benötigt: FS25_playerNeedsAdvanced
 ## Zu finden auf: https://lsfarming-mods.com
