@@ -3,7 +3,9 @@
 ## English
 # FS25_PNA_ImmersiveAddon
 Immersive sound and screen effect add-on for PlayerNeedsAdvanced.
-Includes gender-specific voice-overs that are triggered randomly through a multi-stage system, pulsating screen effects, and micro-sleep for hunger, thirst, and fatigue. (Micro-sleep with blinking; red for pain when the stomach growls; white for dehydration)
+Includes gender-specific voice-overs that are triggered randomly through a multi-stage system, pulsating screen effects, and micro-sleep for hunger, thirst, and fatigue. (Micro-sleep with blinking; )
+In addition, a stress and stamina system has been implemented. Stamina decreases while running and jumping. Jumping height, running speed, and walking speed are all affected by stamina.
+Stress builds up while driving due to concentration, as well as during rain and when needs are not met.
 ## Note: Voiceovers for Male and Female are only availabe in German language for now
 
 ## Important:
@@ -19,7 +21,9 @@ Includes gender-specific voice-overs that are triggered randomly through a multi
 ## German
 # FS25_PNA_ImmersiveAddon
 Immersives Sound- und Bildschirmeffekt-Addon für PlayerNeedsAdvanced.
-Beinhaltet Geschlechtsspezifische Voice-Overs, welche immersiv in einem mehrstufigen system und random ausgelöst werden, pulsierende Bildschirmeffekte und Sekundenschlaf für Hunger, Durst und Müdigkeit. (Sekundenschlaf mit blinzeln, rot für schmerzen bei magenknurren, weiß bei dehydrierung)
+Beinhaltet Geschlechtsspezifische Voice-Overs, welche immersiv in einem mehrstufigen system und random ausgelöst werden, pulsierende Bildschirmeffekte und Sekundenschlaf für Hunger, Durst und Müdigkeit. (Sekundenschlaf mit blinzeln)
+Des weiteren wurde ein Stresslevel - sowie Ausdauer-System eingebunden. Ausdauer sinkt beim Laufen und beim Springen. die Sprunghöhe, Lauf- und Gehgeschwindigkeit wird von der ausdauer beeinflusst.
+Stress baut sich auf am Steuer durch konzentration, sowie bei Regen und wenn Bedürfnisse nicht gestillt werden.
 ## Hinweis: Männliche und weibliche Sprachausgabe ist zurzeit nur in deutscher Sprache hinterlegt.
 
 ## Wichtig:
