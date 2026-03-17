@@ -41,7 +41,7 @@
 --   Schwarzblende      (Müde Tier2):    Sekundenschlaf
 -- =============================================================================
 
-local PNA_ADDON_DEBUG = true
+local PNA_ADDON_DEBUG = false
 local PNA_ADDON_MOD_DIR = g_currentModDirectory or ""
 local PNA_ADDON_MOD_NAME = g_currentModName or ""
 
