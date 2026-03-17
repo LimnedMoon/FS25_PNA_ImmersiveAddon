@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" standalone="no" ?>
+<l10n>
+    <translationContributors>LimnedMoonlight</translationContributors>
+    <elements>
+    <!-- Tier 1 -->
+        <e k="pna_warning_hunger"  v="You're slightly hungry - Eat something!"/>
+        <e k="pna_warning_thirst"  v="You're slightly thirsty - Drink something!"/>
+        <e k="pna_warning_fatigue" v="You're a bit tired - Get some rest!"/>
+    <!-- Tier 2 -->
+        <e k="pna_warning_hunger_2"  v="You're starving - Eat!"/>
+        <e k="pna_warning_thirst_2"  v="You're Dehydrating - Drink!"/>
+        <e k="pna_warning_fatigue_2" v="You're very tired - Sleep!"/>
+    <!-- Stress-Progressbar-->
+        <e k="pna_progress_stress_title" v="Stress"/>
+    <!-- Tier 1 - Stress -->
+        <e k="pna_warning_stress" v="You're Stressed - take care!"/>
+    <!-- Tier 2 - Stress -->
+        <e k="pna_warning_stress_2" v="You're out of Nervs!"/>
+    </elements>
+</l10n>

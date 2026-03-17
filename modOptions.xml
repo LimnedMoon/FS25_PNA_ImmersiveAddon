@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<options>
+	<!-- ===================================================================
+	     Globale Einstellungen
+	     enabled:          Addon an/aus
+	     volume:           Lautstärke aller Warn-Sounds (0.0–1.0)
+	     notifyDurationMs: Anzeigedauer des HUD-Toasts in Millisekunden
+	     =================================================================== -->
+	<warningSounds
+		enabled="true"
+		volume="0.80"
+		notifyDurationMs="6500"
+	/>
+
+	<!-- ===================================================================
+	     Schwellenwerte für die zwei Warn-Stufen
+	     tier1: ab hier Stufe 1 – nur Sound           (Standard: 0.70 = 70%)
+	     tier2: ab hier Stufe 2 – Sound + Blitzeffekt (Standard: 0.90 = 90%)
+	     =================================================================== -->
+	<thresholds
+		tier1="0.70"
+		tier2="0.90"
+	/>
+
+	<!-- ===================================================================
+	     Durst
+	     intervalSec1:    Sekunden zwischen Sounds bei Stufe 1
+	     intervalSec2:    Sekunden zwischen Sounds bei Stufe 2
+	     flashIntervalSec: Sekunden zwischen Flash-Overlay-Episoden (Stufe 2)
+	     flashAlpha:      Maximale Helligkeit (0.0–1.0)
+	     flashPulses:     Anzahl Pulse pro Episode (1–5)
+	     flashPulseInMs:  Einblendzeit pro Puls in ms
+	     flashPulseOutMs: Ausblendzeit pro Puls in ms
+	     flashPauseMs:    Pause zwischen Pulsen in ms
+	     =================================================================== -->
+	<thirst
+		intervalSec1="87"
+		intervalSec2="43"
+		flashIntervalSec="55"
+		flashAlpha="0.35"
+		flashPulses="4"
+		flashPulseInMs="150"
+		flashPulseOutMs="300"
+		flashPauseMs="350"
+	/>
+
+	<!-- ===================================================================
+	     Hunger
+	     intervalSec1:    Sekunden zwischen Sounds bei Stufe 1
+	     intervalSec2:    Sekunden zwischen Sounds bei Stufe 2
+	     flashIntervalSec: Sekunden zwischen Flash-Overlay-Episoden (Stufe 2)
+	     flashAlpha:      Maximale Helligkeit (0.0–1.0)
+	     flashPulses:     Anzahl Pulse pro Episode (1–5)
+	     flashPulseInMs:  Einblendzeit pro Puls in ms
+	     flashPulseOutMs: Ausblendzeit pro Puls in ms
+	     flashPauseMs:    Pause zwischen Pulsen in ms
+	     =================================================================== -->
+	<hunger
+		intervalSec1="97"
+		intervalSec2="49"
+		flashIntervalSec="50"
+		flashAlpha="0.35"
+		flashPulses="7"
+		flashPulseInMs="125"
+		flashPulseOutMs="450"
+		flashPauseMs="500"
+	/>
+
+	<!-- ===================================================================
+	     Müdigkeit
+	     intervalSec1:           Sekunden zwischen tired_1-Sounds
+	     intervalSec2:           Sekunden zwischen tired_2+-Sounds
+	     blackFlashIntervalSec:  Sekunden zwischen Schwarzblenden
+	     blackFlashFadeInSec:    Langsam einschlafen  (empfohlen: 3.5–6.0)
+	     blackFlashHoldSec:      Vollschwarz halten   (empfohlen: 1.5–3.0)
+	     blackFlashFadeOutSec:   Schlagartig aufwachen (empfohlen: 0.2–0.5)
+	     blackFlashBlinkOpenMs:  Blinzeln Aufwach – Augen öffnen sich in ms
+	     blackFlashBlinkCloseMs: Blinzeln Aufwach – Augen schließen sich in ms
+	     =================================================================== -->
+	<tired
+		intervalSec1="113"
+		intervalSec2="50"
+		blackFlashIntervalSec="120"
+		blackFlashFadeInSec="5.0"
+		blackFlashHoldSec="3.5"
+		blackFlashFadeOutSec="0.3"
+		blackFlashBlinkOpenMs="150"
+		blackFlashBlinkCloseMs="75"
+	/>
+
+	<!-- ===================================================================
+		Stress
+	     tier1: 			nur Sound           (Standard: 0.70 = 70%)
+	     tier2: 			Sound + Flash-Overlay (Standard: 0.90 = 90%)
+		 increaseFactor: 	Stress-Anstiegswert generell
+		 rainFactor: 		Stress-Anstiegswert bei Regen
+		 flashAlpha: 		Maximale Helligkeit (0.0–1.0)
+		 flashPulses: 		Anzahl Pulse pro Episode
+		 flashPulseInMs:  	Einblendzeit pro Puls in ms
+	     flashPulseOutMs: 	Ausblendzeit pro Puls in ms
+	     flashPauseMs: 		Pause zwischen Pulsen in ms
+	     =================================================================== -->
+	<stress
+		tier1="0.70"
+		tier2="0.86"
+		increaseFactor="0.005"
+		rainFactor="0.004"
+		flashAlpha="0.30"
+		flashPulses="5"
+		flashPulseInMs="100"
+		flashPulseOutMs="150"
+		flashPauseMs="90"
+	/>
+
+	<!-- ===================================================================
+	     Ausdauer
+		 drainFactor: Genereller Verbrauch der Ausdauer
+		 regenFactor: Generelle Regeneration der Ausdauer
+		 jumpCosts: Verbrauch der Ausdauer beim Springen
+		 jumpHeight: Generelle Sprunghöhe
+		 recoverAt: Wert ab dem Laufen und höher Springen wieder möglich ist
+		 baseWalkSpeed: Generelle Geh-Geschwindigkeit
+		 slowSpeed: Wert um wieviel das laufen verlangsamt wird bei keiner Ausdauer
+		 flashAlpha: Maximale Helligkeit (0.0–1.0)
+		 flashPulses: Anzahl Pulse pro Episode
+	     =================================================================== -->
+
+	<stamina
+		drainFactor="0.042"
+		regenFactor="0.020"
+		jumpCosts="0.08"
+		jumpHeight="0.80"
+		recoverAt="0.10"
+		baseWalkSpeed="7.0"
+		slowSpeed="4.0"
+		flashAlpha="0.35"
+		flashPulses="5"
+	/>
+</options>

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" standalone="no" ?>
+<l10n>
+    <translationContributors>LimnedMoonlight</translationContributors>
+    <elements>
+    <!-- Tier 1 -->
+        <e k="pna_warning_hunger"  v="Du bist etwas hunger - Esse etwas!"/>
+        <e k="pna_warning_thirst"  v="Du hast etwas durst - Trinke was!"/>
+        <e k="pna_warning_fatigue" v="Du bist müde - Ruhe dich doch etwas aus!"/>
+    <!-- Tier 2 -->
+        <e k="pna_warning_hunger_2"  v="Du bist am verhungern, du musst essen!"/>
+        <e k="pna_warning_thirst_2"  v="Du Dehydrierst, du musst trinken!"/>
+        <e k="pna_warning_fatigue_2" v="Du bist übermüdet, und brauchst schlaf!"/>
+    <!-- Stress-Progressbar-->
+        <e k="pna_progress_stress_title" v="Stress"/>
+    <!-- Tier 1 - Stress -->
+        <e k="pna_warning_stress" v="Du bist gestresst!"/>
+    <!-- Tier 2 - Stress -->
+        <e k="pna_warning_stress_2" v="Du bist am Ende mit den Nerven!"/>
+    </elements>
+</l10n>

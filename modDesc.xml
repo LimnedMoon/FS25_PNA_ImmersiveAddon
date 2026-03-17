@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<modDesc descVersion="106">
+
+	<author>LimnedMoonlight</author>
+	<version>1.1.1.0</version>
+
+	<title>
+		<en>PNA - Immersive Addon</en>
+		<de>PNA - Immersiv Erweiterung</de>
+	</title>
+
+	<description>
+		<en><![CDATA[Immersive sound and visual effects addon for PlayerNeedsAdvanced.
+Adds gender-aware warning sounds, pulsing screen flashes and microsleep blackouts for hunger, thirst and fatigue.
+Requires: FS25_playerNeedsAdvanced
+
+Changelog 1.1.1.0:
+- Endurance system implemented
+- Sound samples / flash animations added
+- Dynamic sound samples based on endurance consumption
+- Different endurance consumption on foot vs. in vehicle
+- Jump height and walking speed reduced at low endurance
+Changelog 1.1.0.7:
+- Stress system implemented
+- Sound samples / flash animations added
+- 2-Tier Toastmessage system implemented
+Changelog 1.1.0.6:
+- Safety check for audio file existence before loadSample call
+Changelog 1.1.0.5:
+- Locals added for optimization and formatting
+Changelog 1.1.0.0:
+- Cleanup & performance overhaul
+- BUGFIX: getPNA() no longer iterates all listeners every frame
+- BUGFIX: detectGenderFromSavegame() now uses caching (preventing XML opening every 5s)
+- Removed err() and _toastDumped
+Changelog 1.0.0.0:
+- Initial Release]]></en>
+
+		<de><![CDATA[Immersives Sound- und Bildschirmeffekt-Addon für PlayerNeedsAdvanced.
+Geschlechtsspezifische Warnsounds, pulsierende Bildschirmeffekte und Sekundenschlaf für Hunger, Durst und Müdigkeit.
+Benötigt: FS25_playerNeedsAdvanced
+
+Changelog 1.1.1.0:
+- Ausdauer-System implementiert
+- Soundsamples / Flash-Animationen implementiert
+- Soundsamples dynamisch je nach Ausdauerverbrauch
+- Ausdauerverbrauch onfoot und inVehicle unterschiedlich
+- Sprunghöhe / Gehgeschwindigkeit bei niedriger Ausdauer reduziert
+Changelog 1.1.0.7:
+- Stress-System implementiert
+- Soundsamples / Flash-Animationen implementiert
+- 2-Tier Toastmessage-System implementiert
+Changelog 1.1.0.6:
+- Sicherheitscheck ob Audiodatei vorhanden ist vor loadSample Aufruf
+Changelog 1.1.0.5:
+- Locals hinzugefügt zur Optimierung / Format
+Changelog 1.1.0.0:
+- Cleanup & Performance-Überarbeitung
+- BUG: getPNA() suchte jedes Frame alle Listener durch (behoben)
+- BUG: detectGenderFromSavegame() öffnete XML alle 5s ohne Cache (behoben)
+- err(), _toastDumped entfernt
+Changelog 1.0.0.0:
+- Initial Release]]></de>
+	</description>
+
+	<iconFilename>icon.dds</iconFilename>
+
+	<multiplayer supported="true"/>
+
+	<dependencies>
+		<dependency>FS25_playerNeedsAdvanced</dependency>
+	</dependencies>
+
+	<l10n filenamePrefix="translations/l10n"/>
+
+	<extraSourceFiles>
+		<sourceFile filename="scripts/PNA_WarningSoundsAddon.lua"/>
+	</extraSourceFiles>
+
+</modDesc>
