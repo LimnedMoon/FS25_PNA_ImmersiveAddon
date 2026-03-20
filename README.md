@@ -14,7 +14,8 @@ Stress builds up while driving due to concentration, as well as during rain and 
 #2: To ensure that the mod works as intended and the immersion is maintained, the text warning must be disabled in the Core mod “FS25_playerNeedsAdvanced” within the “modOptions.xml” file: <warningCenter enabled="false"
 
 ## Requires: FS25_playerNeedsAdvanced
-## Find here: https://lsfarming-mods.com
+All rights to CORE-MOD goes to FARMERANDY
+Find here: https://lsfarming-mods.com
 
 ---
 
@@ -32,4 +33,5 @@ Stress baut sich auf am Steuer durch konzentration, sowie bei Regen und wenn Bed
 #2: Damit das Modul funktioniert wie es soll und die Immersion zu tragen kommt, muss in der Core-Mod "FS25_playerNeedsAdvanced" in der Datei "modOptions.xml" die Textwarnung AUS-geschaltet werden: <warningCenter enabled="false"
 
 ## Benötigt: FS25_playerNeedsAdvanced
-## Zu finden auf: https://lsfarming-mods.com
+Alle Rechte zur CORE-MOD liegen bei FARMERANDY
+Zu finden auf: https://lsfarming-mods.com
