@@ -3,9 +3,10 @@
 -- Addon für FS25_playerNeedsAdvanced - Audiovisuelle Effekte
 --
 -- Author: LimnedMoonlight
--- Version: 1.1.1.0
+-- Version: 1.1.1.1
 -- =============================================================================
 -- Changelog:
+--   1.1.1.1 - getPNA() Performance-Optimierung- Code cleanup
 --   1.1.1.0 - Ausdauer-System implementiert:
 --             Soundsamples /- Flash-animationen implementiert
 --             Soundsamples dynamisch je nach Ausdauerverbrauch
@@ -87,8 +88,6 @@ PNA_WarningSoundsAddon = {
     blackFlashFadeOutSec = 0.4,
     blackFlashBlinkOpenMs = 110,
     blackFlashBlinkCloseMs = 70,
-
-    -- States
     _gender = "unknown",
     _soundsLoaded = false,
     _soundLockout = 0,
@@ -375,7 +374,7 @@ local function dumpPlayerObject()
     else dbg("DUMP: graphicsComponent.style nicht verfuegbar.") end
 end
 
--- Liest Gender aus savegame/players.xml. Ergebnis wird gecacht - kein erneutes XML-Lesen nach erstem Treffer.
+-- Liest Gender aus savegame/players.xml. Ergebnis wird gecacht - kein erneutes XML-Lesen nach Treffer.
 local _savegameGenderCache = nil
 
 local function detectGenderFromSavegame()
@@ -430,8 +429,7 @@ function PNA_WarningSoundsAddon:getPNA()
 end
 
 local function getPNA() return PNA_WarningSoundsAddon:getPNA() end
-local function getTiers(self)
-    local pna = getPNA()
+local function getTiers(self, pna)
     if not pna then return 0, 0, 0 end
     local st = pna.state or {}
     local t1 = self.threshold1
@@ -606,13 +604,18 @@ function PNA_WarningSoundsAddon:update(dt)
     if g_currentMission == nil or g_currentMission.hud == nil then return end
     if g_gui:getIsGuiVisible() then return end
 
+    local lp = getLocalPlayerObj()
+    local pna = getPNA() -- EINMALIGER Aufruf für den gesamten Frame
+
+    if lp == nil or pna == nil then return end
+
     local dtSec = dt * 0.001
     local now = g_time or g_currentMission.time -- Fallback auf Mission Time
 
-    self:updateStress(dt)
-    self:updateStamina(dt)
+    self:updateStress(dt, pna)
+    self:updateStamina(dt, pna)
 
-    -- GENDER PRÜFUNG & SOUND LOADING
+    -- GENDER PRÜFUNG & SOUND
     self._genderRetryTimer = self._genderRetryTimer - dtSec
     if self._genderRetryTimer <= 0 then
         self._genderRetryTimer = 5
@@ -626,16 +629,21 @@ function PNA_WarningSoundsAddon:update(dt)
             end
         elseif not self._soundsLoaded then
             self._dumpCooldown = self._dumpCooldown - 5
-            if self._dumpCooldown <= 0 then self._dumpCooldown = 30 dbg("Gender noch unbekannt.") end
+            if self._dumpCooldown <= 0 then
+                self._dumpCooldown = 30
+                dbg("Gender noch unbekannt.")
+            end
         end
     end
 
-    local hTier, thTier, fTier = getTiers(self)
+    -- TIERS
+    local hTier, thTier, fTier = getTiers(self, pna)
 
+    -- DEBUG
     self._dbgTimer = self._dbgTimer - dtSec
-    if self._dbgTimer <= 0 then self._dbgTimer = 10
-        local pna = getPNA()
-        local st = pna and pna.state or {}
+    if self._dbgTimer <= 0 then
+        self._dbgTimer = 10
+        local st = pna.state or {}
         dbg("STATE: hunger=%.3f thirst=%.3f fatigue=%.3f | stress=%.3f", st.hunger or -1, st.thirst or -1, st.fatigue or -1, self.stressLevel or 0)
     end
 
@@ -660,10 +668,12 @@ function PNA_WarningSoundsAddon:update(dt)
 
         -- Visuelle Dursteffekte
         if thTier >= 2 and self._whiteEl then
-            if not self._whiteTween:getFinished() then self._whiteTween:update(dt)
+            if not self._whiteTween:getFinished() then
+                self._whiteTween:update(dt)
             else
                 self._timerThirstFlash = self._timerThirstFlash - dtSec
-                if self._timerThirstFlash <= 0 then self._timerThirstFlash = self.thirstFlashIntervalSec
+                if self._timerThirstFlash <= 0 then
+                    self._timerThirstFlash = self.thirstFlashIntervalSec
                     self._whiteTween = makePulseTween(self._whiteEl, self.thirstFlashAlpha, self._thirstPulses, self.thirstFlashPulseInMs, self.thirstFlashPulseOutMs, self.thirstFlashPauseMs)
                 end
             end
@@ -684,7 +694,8 @@ function PNA_WarningSoundsAddon:update(dt)
                 local played = playIfFree(self, pool, self.volume)
                 self._timerHunger = interval
                 if played and (now - self._lastNotifyHunger) > (self.notifyDurationMs + 1000) then
-                    local tKey = (hTier >= 2) and "pna_warning_hunger_2" or "pna_warning_hunger" showToast((g_i18n and g_i18n:getText(tKey)) or "Hunger", self.notifyDurationMs, hTier)
+                    local tKey = (hTier >= 2) and "pna_warning_hunger_2" or "pna_warning_hunger"
+                    showToast((g_i18n and g_i18n:getText(tKey)) or "Hunger", self.notifyDurationMs, hTier)
                     self._lastNotifyHunger = now
                 end
             end
@@ -692,7 +703,8 @@ function PNA_WarningSoundsAddon:update(dt)
 
         -- Visuelle Hungereffekte
         if hTier >= 2 and self._redEl then
-            if not self._redTween:getFinished() then self._redTween:update(dt)
+            if not self._redTween:getFinished() then
+                self._redTween:update(dt)
             else
                 self._timerHungerFlash = self._timerHungerFlash - dtSec
                 if self._timerHungerFlash <= 0 then
@@ -717,7 +729,8 @@ function PNA_WarningSoundsAddon:update(dt)
                 local played = playIfFree(self, pool, self.volume)
                 self._timerTired = interval
                 if played and (now - (self._lastNotifyTired or 0)) > (self.notifyDurationMs + 1000) then
-                    local tKey = (fTier >= 2) and "pna_warning_fatigue_2" or "pna_warning_fatigue" showToast((g_i18n and g_i18n:getText(tKey)) or "Müdigkeit", self.notifyDurationMs, fTier)
+                    local tKey = (fTier >= 2) and "pna_warning_fatigue_2" or "pna_warning_fatigue"
+                    showToast((g_i18n and g_i18n:getText(tKey)) or "Müdigkeit", self.notifyDurationMs, fTier)
                     self._lastNotifyTired = now
                 end
             end
@@ -754,17 +767,17 @@ function PNA_WarningSoundsAddon:update(dt)
         self._blackTween = TweenSequence.NO_SEQUENCE
     end
 
-   -- STRESSREAKTION
+    -- STRESSREAKTION
     local sLevel = self.stressLevel or 0
     local sTier = (sLevel >= 0.90 and 2 or sLevel >= 0.70 and 1 or 0)
 
     if sTier > 0 then
-        -- Stress-Sounds und Toasts
         local pool = sTier >= 2 and self.sounds.stress.tier2 or self.sounds.stress.tier1
         self._timerStress = self._timerStress - dtSec
         if self._timerStress <= 0 then
             if playIfFree(self, pool, self.volume) then
-                local tKey = (sTier >= 2) and "pna_warning_stress_2" or "pna_warning_stress" showToast(g_i18n:getText(tKey), self.notifyDurationMs, sTier)
+                local tKey = (sTier >= 2) and "pna_warning_stress_2" or "pna_warning_stress"
+                showToast(g_i18n:getText(tKey), self.notifyDurationMs, sTier)
                 self._timerStress = (sTier >= 2) and 30 or 50
             end
         end
@@ -772,14 +785,12 @@ function PNA_WarningSoundsAddon:update(dt)
         -- Visuelle Stresseffekte
         if self._yellowEl then
             if sTier >= 2 then
-                -- Tier 2: Blitzen (Nutzt XML-Werte für Speed/Intensität)
                 if not self._yellowTween or self._yellowTween:getFinished() then
                     self._yellowTween = makePulseTween(self._yellowEl, self.stressFlashAlpha or 0.20, self._stressPulses or 4, 120, 180, 60)
                 else
                     self._yellowTween:update(dt)
                 end
             else
-                -- Tier 1 (70-90%): Statisches, fast unsichtbares Schimmern
                 self._yellowEl:setVisible(true)
                 self._yellowEl:setAlpha(0.04)
                 self._yellowTween = TweenSequence.NO_SEQUENCE
@@ -791,8 +802,7 @@ function PNA_WarningSoundsAddon:update(dt)
     end
 end
 
-function PNA_WarningSoundsAddon:updateStress(dt)
-    local pna = getPNA()
+function PNA_WarningSoundsAddon:updateStress(dt, pna)
     if not pna or not pna.state then return end
 
     local dtSec = dt * 0.001
@@ -828,12 +838,12 @@ function PNA_WarningSoundsAddon:updateStress(dt)
     self.stressLevel = math.max(0, math.min(1, (self.stressLevel or 0) + (increase * dtSec)))
 end
 
-function PNA_WarningSoundsAddon:updateStamina(dt)
+function PNA_WarningSoundsAddon:updateStamina(dt, pna)
     local lp = getLocalPlayerObj()
     if not lp or not lp.mover then return end
     local dtSec = dt * 0.001
 
-    -- 1. ORIGINALE WERTE SICHERN & ANPASSEN
+    -- ORIGINALE WERTE SICHERN & ANPASSEN
     if self.origRunSpeed == nil then
         self.origRunSpeed = (PlayerStateWalk and PlayerStateWalk.MAXIMUM_RUN_SPEED) or (15 / 3.6)
     end
@@ -851,13 +861,13 @@ function PNA_WarningSoundsAddon:updateStamina(dt)
 
     if self.origJumpForce == nil and PlayerStateJump ~= nil then self.origJumpForce = PlayerStateJump.JUMP_UPFORCE or 5.5 end
 
-    -- 2. SPRUNGHÖHE ANWENDEN
+    -- SPRUNGHÖHE ANWENDEN
     if PlayerStateJump ~= nil and self.origJumpForce ~= nil then
         local heightFactor = self.isExhausted and 0.5 or (self.staminaJumpHeight or 1.0)
         PlayerStateJump.JUMP_UPFORCE = self.origJumpForce * heightFactor
     end
 
-    -- 3. HYSTERESE (Umschaltpunkt)
+    -- HYSTERESE
     local recoverPoint = self.staminaRecoverThreshold or 0.15
     if self.staminaLevel <= 0.01 then
         self.isExhausted = true
@@ -865,7 +875,7 @@ function PNA_WarningSoundsAddon:updateStamina(dt)
         self.isExhausted = false
     end
 
-    -- 4. NORMALISIERUNG
+    -- NORMALISIERUNG
     if self.isExhausted then
         if not self._staminaIsSlowed then
             local slow = self.staminaSlowSpeed or (3 / 3.6)
@@ -894,20 +904,19 @@ function PNA_WarningSoundsAddon:updateStamina(dt)
         end
     end
 
-    -- 5. SPRUNG-DETEKTOR
+    -- SPRUNG-DETEKTOR
     local vy = 0
     if lp.mover.getVelocity then _, vy, _ = lp.mover:getVelocity() end
 
     -- Timer-Management
     self._jumpCooldown = (self._jumpCooldown or 0) - dt
 
-    -- RESET-LOGIK:
+    -- RESET
     if self._jumpDebtActive and vy < 0.5 and self._jumpCooldown <= 0 then
         self._jumpDebtActive = false
-        -- dbg("Sprung-Detektor bereit für nächsten Hop.")
     end
 
-    -- ABZUG-LOGIK:
+    -- ABZUG
     if vy > 2.0 and not self._jumpDebtActive then
         local costs = self.staminaJumpCosts or 0.15
         self.staminaLevel = math.max(0, self.staminaLevel - costs)
@@ -917,7 +926,7 @@ function PNA_WarningSoundsAddon:updateStamina(dt)
         dbg("Sprung-Abzug ausgeführt! Level: %.2f (Velocity: %.2f)", self.staminaLevel, vy)
     end
 
-    -- 6. VERBRAUCH & REGENERATION
+    -- VERBRAUCH & REGENERATION
     self._regenDelay = (self._regenDelay or 0) - dt
     local isMoving = lp.movingDirection ~= 0
     local isSprinting = lp.graphicsState and lp.graphicsState.isRunning and isMoving
@@ -929,7 +938,7 @@ function PNA_WarningSoundsAddon:updateStamina(dt)
         self.staminaLevel = math.min(1.0, self.staminaLevel + (factor * dtSec))
     end
 
-    -- 7. TWEEN
+    -- TWEEN
     if self._orangeEl then
         if self.staminaLevel < 0.25 or self.isExhausted then
             if self._staminaTween == nil or self._staminaTween == TweenSequence.NO_SEQUENCE or self._staminaTween:getFinished() then
@@ -943,7 +952,7 @@ function PNA_WarningSoundsAddon:updateStamina(dt)
         end
     end
 
-    -- 8. SOUNDS
+    -- SOUNDS
     if self.staminaLevel < 0.35 then
         self._timerStaminaSound = (self._timerStaminaSound or 0) - dtSec
         if self._timerStaminaSound <= 0 then
@@ -957,135 +966,136 @@ end
 -- Draw
 function PNA_WarningSoundsAddon:draw()
     if not self.initialized or not self.enabled then return end
-
     if g_gui and g_gui:getIsGuiVisible() then return end
-    if self._whiteEl and self._whiteEl:getVisible() then self._whiteEl:draw() end
-    if self._redEl and self._redEl:getVisible() then self._redEl:draw() end
+
+    -- VISUELLE OVERLAYS ZEICHNEN
+    if self._whiteEl  and self._whiteEl:getVisible()  then self._whiteEl:draw() end
+    if self._redEl    and self._redEl:getVisible()    then self._redEl:draw() end
     if self._yellowEl and self._yellowEl:getVisible() then self._yellowEl:draw() end
-    if self._orangeEl and self._orangeEl:getVisible() then self._orangeEl:draw() end -- Fehlte
-    if self._blackEl and self._blackEl:getVisible() then self._blackEl:draw() end
+    if self._orangeEl and self._orangeEl:getVisible() then self._orangeEl:draw() end
+    if self._blackEl  and self._blackEl:getVisible()  then self._blackEl:draw() end
 
-    -- STRESSBAR
+    -- HUD / PROGRESSBARS
     if g_currentMission.hud ~= nil then
-        local pna = self:getPNA()
+        local pna = getPNA() 
 
-        -- Prüfen ob Bars in den Optionen deaktiviert wurden
         local barsVisible = true
-        if pna and pna.OPTIONS and pna.OPTIONS.ui and pna.OPTIONS.ui.barsVisible == false then barsVisible = false end
+        if pna and pna.OPTIONS and pna.OPTIONS.ui and pna.OPTIONS.ui.barsVisible == false then 
+            barsVisible = false 
+        end
 
         if not barsVisible then
             if self.stressBarHandle then
                 g_currentMission.hud:removeSideNotificationProgressBar(self.stressBarHandle)
                 self.stressBarHandle = nil
-                dbg("DRAW_DBG: Stress-Bar entfernt (barsVisible=false in PNA-Optionen)")
+            end
+            if self.staminaBarHandle then
+                g_currentMission.hud:removeSideNotificationProgressBar(self.staminaBarHandle)
+                self.staminaBarHandle = nil
             end
             return
         end
 
-        -- Titel holen (mit Fallback)
-        local titleKey = "pna_progress_stress_title"
-        local title = "Stress"
-        if g_i18n and g_i18n:hasText(titleKey) then title = g_i18n:getText(titleKey)
-        else
-            if (self._dbgTimer or 0) <= 0 then dbg("DRAW_DBG: L10N Key '%s' fehlt!", titleKey) end
-        end
-
+        -- STRESSBAR
         if self.stressBarHandle == nil then
+            local titleKey = "pna_progress_stress_title"
+            local title = (g_i18n and g_i18n:hasText(titleKey)) and g_i18n:getText(titleKey) or "Stress"
             self.stressBarHandle = g_currentMission.hud:addSideNotificationProgressBar(title, nil, 0)
-            dbg("DRAW_DBG: ProgressBar Handle erstellt (Titel: %s)", title)
         end
 
-    -- AUSDAUERBAR IM HUD
-    if self.staminaBarHandle == nil then
-        local staminaTitle = "Ausdauer" -- Oder g_i18n:getText("pna_stamina_title")
-        self.staminaBarHandle = g_currentMission.hud:addSideNotificationProgressBar(staminaTitle, nil, 0)
-        dbg("DRAW_DBG: StaminaBar Handle erstellt.")
-    end
-
-    if self.staminaBarHandle then
-        self.staminaBarHandle.progress = self.staminaLevel or 1.0
-        self.staminaBarHandle.text = string.format("%d%%", math.floor(self.staminaLevel * 100))
-        g_currentMission.hud:markSideNotificationProgressBarForDrawing(self.staminaBarHandle)
-    end
-
-        -- Aktualisierung der Progressbar
         if self.stressBarHandle then
             local sLevel = self.stressLevel or 0
             self.stressBarHandle.progress = sLevel
             self.stressBarHandle.text = string.format("%d%%", math.floor(sLevel * 100 + 0.5))
             g_currentMission.hud:markSideNotificationProgressBarForDrawing(self.stressBarHandle)
-        else
-            if (self._dbgTimer or 0) <= 0 then dbg("DRAW_ERR: Handle existiert nicht, obwohl es sollte!") end
         end
-    else
-        if (self._dbgTimer or 0) <= 0 then dbg("DRAW_ERR: g_currentMission.hud ist NIL!") end
+
+        -- AUSDAUERBAR
+        if self.staminaBarHandle == nil then
+            local staminaTitle = (g_i18n and g_i18n:hasText("pna_stamina_title")) and g_i18n:getText("pna_stamina_title") or "Ausdauer"
+            self.staminaBarHandle = g_currentMission.hud:addSideNotificationProgressBar(staminaTitle, nil, 0)
+        end
+
+        if self.staminaBarHandle then
+            local stamLevel = self.staminaLevel or 1.0
+            self.staminaBarHandle.progress = stamLevel
+            self.staminaBarHandle.text = string.format("%d%%", math.floor(stamLevel * 100))
+            g_currentMission.hud:markSideNotificationProgressBarForDrawing(self.staminaBarHandle)
+        end
+
     end
 end
 
 -- =============================================================================
 -- deleteMap()
 function PNA_WarningSoundsAddon:deleteMap()
-    -- 1. HUD ELEMENTE
-    if self.stressBarHandle then
-        if g_currentMission and g_currentMission.hud then g_currentMission.hud:removeSideNotificationProgressBar(self.stressBarHandle) end
-        self.stressBarHandle = nil
+    -- HUD ELEMENTE ENTFERNEN
+    if g_currentMission and g_currentMission.hud then
+        if self.stressBarHandle then
+            g_currentMission.hud:removeSideNotificationProgressBar(self.stressBarHandle)
+            self.stressBarHandle = nil
+        end
+        if self.staminaBarHandle then
+            g_currentMission.hud:removeSideNotificationProgressBar(self.staminaBarHandle)
+            self.staminaBarHandle = nil
+        end
     end
 
-    if self.staminaBarHandle then
-        if g_currentMission and g_currentMission.hud then g_currentMission.hud:removeSideNotificationProgressBar(self.staminaBarHandle) end
-        self.staminaBarHandle = nil
+    -- PHYSIK RESET
+    if PlayerStateWalk ~= nil and self.origRunSpeed ~= nil then 
+        PlayerStateWalk.MAXIMUM_RUN_SPEED = self.origRunSpeed 
+        PlayerStateWalk.MAXIMUM_WALK_SPEED = self.origWalkSpeed or (7 / 3.6)
+    end
+    if PlayerStateJump ~= nil and self.origJumpForce ~= nil then 
+        PlayerStateJump.JUMP_UPFORCE = self.origJumpForce 
     end
 
-    -- 2. PHYSIK RESET
-    if PlayerStateWalk ~= nil and self.origRunSpeed ~= nil then PlayerStateWalk.MAXIMUM_RUN_SPEED = self.origRunSpeed PlayerStateWalk.MAXIMUM_WALK_SPEED = 7 / 3.6 end
-    if PlayerStateJump ~= nil and self.origJumpForce ~= nil then PlayerStateJump.JUMP_UPFORCE = self.origJumpForce end
-
-    -- 3. SOUNDS CLEANUP
-    for _, tier in pairs(self.sounds) do
-        for _, pool in pairs(tier) do
-            for _, s in ipairs(pool) do
-                if s ~= nil then if safeStop then safeStop(s) else stopSample(s) end
-                    delete(s)
+    -- SOUNDS CLEANUP (Sicheres Zerstören der Samples)
+    if self.sounds then
+        for _, category in pairs(self.sounds) do
+            if type(category) == "table" then
+                for _, pool in pairs(category) do
+                    if type(pool) == "table" then
+                        for _, s in ipairs(pool) do
+                            if s ~= nil and s ~= 0 then 
+                                stopSample(s)
+                                delete(s)
+                            end
+                        end
+                    end
                 end
             end
         end
     end
 
-    self.sounds = {
-        thirst = { tier1 = {}, tier2 = {} },
-        hunger = { tier1 = {}, tier2 = {} },
-        tired  = { tier1 = {}, tier2 = {} },
-        stress = { tier1 = {}, tier2 = {} },
-        stamina = { tier1 = {} }
-    }
+    -- VISUELLE ELEMENTE & OVERLAYS LÖSCHEN
+    local overlays = {"_whiteEl", "_yellowEl", "_redEl", "_blackEl", "_orangeEl"}
+    for _, elName in ipairs(overlays) do
+        if self[elName] then
+            if self[elName].delete then self[elName]:delete() end -- Overlay-Speicher freigeben
+            self[elName] = nil
+        end
+    end
 
-    -- 4. VISUELLE ELEMENTE RESET
-    if self._whiteEl then self._whiteEl:setVisible(false); self._whiteEl = nil end
-    if self._yellowEl then self._yellowEl:setVisible(false); self._yellowEl = nil end
-    if self._redEl   then self._redEl:setVisible(false);   self._redEl   = nil end
-    if self._blackEl then self._blackEl:setVisible(false); self._blackEl = nil end
-    if self._orangeEl then self._orangeEl:setVisible(false); self._orangeEl = nil end
+    -- TWEENS & STATUS RESET
     self._whiteTween = TweenSequence.NO_SEQUENCE
     self._redTween = TweenSequence.NO_SEQUENCE
     self._blackTween = TweenSequence.NO_SEQUENCE
     self._staminaTween = TweenSequence.NO_SEQUENCE
+    
     self.initialized = false
     self.staminaLevel = 1.0
     self.isExhausted = false
+    self._staminaIsSlowed = false
     self._jumpDebtActive = false
-    self._timerStaminaSound = 0
 
+    -- PLAYER-PHYSIK RESET
     local lp = getLocalPlayerObj()
     if lp and lp.mover and self.origRunSpeed then
         lp.mover.maxSpeed = self.origRunSpeed
     end
-    if PlayerStateWalk ~= nil and self.origRunSpeed and self.origWalkSpeed then
-        PlayerStateWalk.MAXIMUM_RUN_SPEED = self.origRunSpeed
-        PlayerStateWalk.MAXIMUM_WALK_SPEED = self.origWalkSpeed
-    end
-    self._staminaIsSlowed = false
 
-    dbg("PNA-Cleanup: Physik (Jump/Speed) und Tweens resettet.")
+    dbg("PNA-Cleanup: Alle Systeme (Sounds, UI, Physik) erfolgreich entladen.")
 end
 
 addModEventListener(PNA_WarningSoundsAddon)
